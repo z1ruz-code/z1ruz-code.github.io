@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>z1ruz-code | Personal Site</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --blob-color-1: #ff0000;
+            --blob-color-2: #ff7700;
+            --transition-speed: 0.8s;
+        }
+
+        .dark {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+        }
+
+        .liquid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: blur(80px);
+            opacity: 0.6;
+        }
+
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: var(--blob-color-1);
+            border-radius: 50%;
+            animation: move 20s infinite alternate ease-in-out;
+            transition: background var(--transition-speed) ease-in-out;
+        }
+
+        .blob-2 {
+            background: var(--blob-color-2);
+            width: 400px;
+            height: 400px;
+            right: 10%;
+            bottom: 10%;
+            animation: move 15s infinite alternate-reverse ease-in-out;
+            animation-delay: -5s;
+            transition: background var(--transition-speed) ease-in-out;
+        }
+
+        @keyframes move {
+            from { transform: translate(-20%, -20%) scale(1); }
+            to { transform: translate(40%, 40%) scale(1.2); }
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            border-radius: 2rem;
+            transition: background var(--transition-speed) ease, border var(--transition-speed) ease, transform 0.3s ease;
+        }
+
+        .color-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.2);
+        }
+
+        .color-dot.active {
+            border-color: var(--text-color);
+        }
+
+        .github-btn {
+            background: var(--text-color);
+            color: var(--bg-color);
+            transition: all 0.3s ease, background var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        .github-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center">
+
+    <div class="liquid-bg">
+        <div id="blob1" class="blob"></div>
+        <div id="blob2" class="blob blob-2"></div>
+    </div>
+
+    <div class="fixed top-6 right-6 flex flex-col gap-4 z-10">
+        <button id="themeToggle" class="glass-card p-3 rounded-full flex items-center justify-center">
+            <svg id="sunIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M7.757 6.343l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+            <svg id="moonIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+
+        <div class="glass-card p-3 rounded-2xl flex flex-col gap-3">
+            <div class="color-dot active" style="background: #ff0000;" data-colors='["#ff0000", "#ff7700"]'></div>
+            <div class="color-dot" style="background: #10b981;" data-colors='["#10b981", "#3b82f6"]'></div>
+            <div class="color-dot" style="background: #a855f7;" data-colors='["#a855f7", "#ec4899"]'></div>
+            <div class="color-dot" style="background: #3b82f6;" data-colors='["#3b82f6", "#06b6d4"]'></div>
+        </div>
+    </div>
+
+    <main class="relative z-0 px-4 w-full max-w-2xl">
+        <div class="glass-card p-12 text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
+                Hello, I am <span class="opacity-80">z1ruz</span>
+            </h1>
+            <p class="text-xl md:text-2xl font-light opacity-70 mb-10">
+                Начинающий разработчик
+            </p>
+            
+            <a href="https://github.com/z1ruz-code" target="_blank" class="github-btn inline-flex items-center gap-3 px-8 py-4 rounded-full text-lg font-semibold uppercase tracking-wider">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.011-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                GitHub
+            </a>
+        </div>
+        
+        <div class="mt-8 text-center opacity-40 text-sm font-medium">
+            z1ruz-code.github.io
+        </div>
+    </main>
+
+    <script>
+        const body = document.body;
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const colorDots = document.querySelectorAll('.color-dot');
+
+        function updateIcons(isDark) {
+            sunIcon.classList.toggle('hidden', !isDark);
+            moonIcon.classList.toggle('hidden', isDark);
+        }
+
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        if (systemPrefersDark.matches) {
+            body.classList.add('dark');
+            updateIcons(true);
+        } else {
+            updateIcons(false);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            updateIcons(body.classList.contains('dark'));
+        });
+
+        colorDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                colorDots.forEach(d => d.classList.remove('active'));
+                dot.classList.add('active');
+                const colors = JSON.parse(dot.getAttribute('data-colors'));
+                document.documentElement.style.setProperty('--blob-color-1', colors[0]);
+                document.documentElement.style.setProperty('--blob-color-2', colors[1]);
+            });
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            const card = document.querySelector('.glass-card');
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 60;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 60;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+    </script>
+</body>
+</html>
