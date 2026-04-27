@@ -1,1 +1,1 @@
-# [z1ruz-code](z1ruz-code.github.io)
+# [z1ruz-code](https://z1ruz-code.github.io)
