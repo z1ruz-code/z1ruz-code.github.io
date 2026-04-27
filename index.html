@@ -3,199 +3,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>z1ruz-code | Personal Site</title>
+    <title>Z1RUZ | Digital Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://avatars.githubusercontent.com/u/188240194?v=4" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-color: #1a1a1a;
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --blob-color-1: #ff0000;
-            --blob-color-2: #ff7700;
-            --transition-speed: 0.8s;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400&display=swap');
 
-        .dark {
-            --bg-color: #0f172a;
-            --text-color: #f8fafc;
-            --glass-bg: rgba(15, 23, 42, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.1);
+        :root {
+            --bg: #050505;
+            --fg: #ffffff;
+            --accent: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+            --grid-color: rgba(255, 255, 255, 0.03);
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
-            margin: 0;
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
         }
 
-        .liquid-bg {
+        @media (min-width: 1024px) {
+            body { cursor: none; }
+        }
+
+        .grid-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            filter: blur(80px);
-            opacity: 0.6;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .blob {
+        .spotlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(circle 350px at 50% 50%, rgba(255,255,255,0.06), transparent 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .custom-cursor, .custom-cursor-follower {
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .custom-cursor, .custom-cursor-follower {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                pointer-events: none;
+                will-change: transform;
+            }
+            .custom-cursor {
+                width: 6px;
+                height: 6px;
+                background: var(--accent);
+                border-radius: 50%;
+                z-index: 9999;
+            }
+            .custom-cursor-follower {
+                width: 44px;
+                height: 44px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 50%;
+                z-index: 9998;
+            }
+        }
+
+        .line-reveal {
+            overflow: hidden;
+            display: block;
+        }
+
+        .border-thin {
+            border-width: 0.5px;
+            border-color: var(--border);
+        }
+
+        .project-card {
+            position: relative;
+            z-index: 2;
+            transition: border-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                        background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (min-width: 1024px) {
+            .project-card:hover {
+                border-color: rgba(255, 255, 255, 0.3);
+                background-color: rgba(255, 255, 255, 0.03);
+            }
+        }
+
+        .nav-link::after {
+            content: '';
             position: absolute;
-            width: 500px;
-            height: 500px;
-            background: var(--blob-color-1);
-            border-radius: 50%;
-            animation: move 20s infinite alternate ease-in-out;
-            transition: background var(--transition-speed) ease-in-out;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--fg);
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .blob-2 {
-            background: var(--blob-color-2);
-            width: 400px;
-            height: 400px;
-            right: 10%;
-            bottom: 10%;
-            animation: move 15s infinite alternate-reverse ease-in-out;
-            animation-delay: -5s;
-            transition: background var(--transition-speed) ease-in-out;
+        .nav-link:hover::after {
+            width: 100%;
         }
 
-        @keyframes move {
-            from { transform: translate(-20%, -20%) scale(1); }
-            to { transform: translate(40%, 40%) scale(1.2); }
+        .text-kern {
+            letter-spacing: -0.05em;
         }
 
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-            border-radius: 2rem;
-            transition: background var(--transition-speed) ease, border var(--transition-speed) ease, transform 0.3s ease;
+        .noise {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAA6f7sBAAAABlBMVEUAAAD///+l2Z/dAAAANUlEQVQ4y2NgYGRiYmJmYWFhZWNjY2NnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ8fAAAAAyAD9v2z8WwAAAABJRU5ErkJggg==');
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 1000;
         }
 
-        .color-dot {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.2s;
-            border: 2px solid transparent;
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; }
+        
+        .stack-tag {
+            font-size: 8px;
+            padding: 2px 8px;
+            border: 0.5px solid var(--border);
+            border-radius: 100px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
-        .color-dot:hover {
-            transform: scale(1.2);
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            color: white;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-top: 20px;
+            z-index: 10;
+            position: relative;
         }
 
-        .color-dot.active {
-            border-color: var(--text-color);
-        }
-
-        .github-btn {
-            background: var(--text-color);
-            color: var(--bg-color);
-            transition: all 0.3s ease, background var(--transition-speed) ease, color var(--transition-speed) ease;
-        }
-
-        .github-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        @media (min-width: 1024px) {
+            .download-btn:hover {
+                background: white;
+                color: black;
+                border-color: white;
+            }
         }
     </style>
 </head>
-<body class="flex items-center justify-center">
+<body>
 
-    <div class="liquid-bg">
-        <div id="blob1" class="blob"></div>
-        <div id="blob2" class="blob blob-2"></div>
-    </div>
+    <div class="noise"></div>
+    <div class="grid-background"></div>
+    <div class="spotlight" id="spotlight"></div>
+    
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="custom-cursor-follower" id="follower"></div>
 
-    <div class="fixed top-6 right-6 flex flex-col gap-4 z-10">
-        <button id="themeToggle" class="glass-card p-3 rounded-full flex items-center justify-center">
-            <svg id="sunIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M7.757 6.343l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
-            <svg id="moonIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-        </button>
-
-        <div class="glass-card p-3 rounded-2xl flex flex-col gap-3">
-            <div class="color-dot active" style="background: #ff0000;" data-colors='["#ff0000", "#ff7700"]'></div>
-            <div class="color-dot" style="background: #10b981;" data-colors='["#10b981", "#3b82f6"]'></div>
-            <div class="color-dot" style="background: #a855f7;" data-colors='["#a855f7", "#ec4899"]'></div>
-            <div class="color-dot" style="background: #3b82f6;" data-colors='["#3b82f6", "#06b6d4"]'></div>
+    <nav class="fixed top-0 w-full z-50 mix-blend-difference px-6 md:px-8 py-6 flex justify-between items-center opacity-0" id="nav">
+        <div class="text-[9px] md:text-xs uppercase tracking-[0.3em] font-light">Z1RUZ — <span class="current-year"></span></div>
+        <div class="flex space-x-6 md:space-x-12">
+            <a href="#projects" class="nav-link relative text-[9px] md:text-[10px] uppercase tracking-[0.2em] font-light">Работы</a>
+            <a href="https://github.com/z1ruz-code" target="_blank" class="nav-link relative text-[9px] md:text-[10px] uppercase tracking-[0.2em] font-light">GitHub</a>
         </div>
-    </div>
+    </nav>
 
-    <main class="relative z-0 px-4 w-full max-w-2xl">
-        <div class="glass-card p-12 text-center">
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
-                Hello, I am <span class="opacity-80">z1ruz</span>
-            </h1>
-            <p class="text-xl md:text-2xl font-light opacity-70 mb-10">
-                Начинающий разработчик
-            </p>
-            
-            <a href="https://github.com/z1ruz-code" target="_blank" class="github-btn inline-flex items-center gap-3 px-8 py-4 rounded-full text-lg font-semibold uppercase tracking-wider">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.011-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.627-5.373-12-12-12z"/></svg>
-                GitHub
-            </a>
-        </div>
-        
-        <div class="mt-8 text-center opacity-40 text-sm font-medium">
-            z1ruz-code.github.io
-        </div>
+    <main class="relative z-10">
+        <section class="h-screen flex flex-col justify-center px-6 md:px-24">
+            <div class="line-reveal">
+                <h2 id="hero-sub" class="text-[10px] md:text-sm uppercase tracking-[0.4em] opacity-0 mb-4 font-light italic">System Architect & Security Developer</h2>
+            </div>
+            <div class="line-reveal">
+                <h1 id="hero-main" class="text-7xl md:text-[10rem] font-light leading-tight md:leading-none text-kern -ml-1 md:-ml-2 opacity-0">
+                    Z1RUZ
+                </h1>
+            </div>
+            <div id="hero-desc" class="mt-8 md:mt-12 max-w-sm md:max-w-lg opacity-0 text-xs md:text-sm font-light leading-relaxed">
+                Проектирование отказоустойчивых систем и инструментов безопасности. Архитектурная точность, чистый код и отсутствие лишнего шума.
+            </div>
+        </section>
+
+        <section id="projects" class="px-6 md:px-24 py-24 md:py-32 border-t border-thin">
+            <div class="flex justify-between items-end mb-16 md:mb-24 reveal">
+                <h3 class="text-3xl md:text-4xl font-light tracking-tight">Проекты</h3>
+                <span class="text-[9px] md:text-[10px] uppercase tracking-widest opacity-30">Selection</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-px bg-white/10 border-thin overflow-hidden">
+                <div class="project-card bg-[#050505] p-8 md:p-12 aspect-auto lg:aspect-[4/5] flex flex-col justify-between group">
+                    <div class="flex justify-between items-start mb-12 lg:mb-0">
+                        <div class="flex flex-col gap-3">
+                            <span class="text-[9px] md:text-[10px] opacity-40 uppercase tracking-widest">Network Intelligence</span>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="stack-tag">Python</span>
+                                <span class="stack-tag">Network</span>
+                                <span class="stack-tag">OSINT</span>
+                            </div>
+                        </div>
+                        <a href="https://github.com/z1ruz-code/IPPulse" target="_blank" class="opacity-30 hover:opacity-100 transition-all hover:translate-x-1 hover:-translate-y-1">
+                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 11.5L11.5 3.5M11.5 3.5H3.5M11.5 3.5V11.5" stroke="white" stroke-width="0.5"/></svg>
+                        </a>
+                    </div>
+                    <div>
+                        <h4 class="text-3xl md:text-4xl font-light mb-4 tracking-tight">IPPulse</h4>
+                        <p class="text-[10px] md:text-xs opacity-40 font-light max-w-sm uppercase tracking-wider leading-relaxed mb-6">Инструмент терминального сбора данных об IP-адресах. Глубокая аналитика ASN, ISP и геолокации.</p>
+                        <a href="https://github.com/z1ruz-code/IPPulse/releases/latest" target="_blank" class="download-btn">
+                            <svg width="12" height="12" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 1.5V10.5M7.5 10.5L3.5 6.5M7.5 10.5L11.5 6.5M2.5 13.5H12.5" stroke="currentColor" stroke-width="1"/></svg>
+                            Скачать
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card bg-[#050505] p-8 md:p-12 aspect-auto lg:aspect-[4/5] flex flex-col justify-between group lg:border-l border-thin">
+                    <div class="flex justify-between items-start mb-12 lg:mb-0">
+                        <div class="flex flex-col gap-3">
+                            <span class="text-[9px] md:text-[10px] opacity-40 uppercase tracking-widest">Cryptography</span>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="stack-tag">Security</span>
+                                <span class="stack-tag">Python</span>
+                                <span class="stack-tag">Encryption</span>
+                            </div>
+                        </div>
+                        <a href="https://github.com/z1ruz-code/tornado" target="_blank" class="opacity-30 hover:opacity-100 transition-all hover:translate-x-1 hover:-translate-y-1">
+                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 11.5L11.5 3.5M11.5 3.5H3.5M11.5 3.5V11.5" stroke="white" stroke-width="0.5"/></svg>
+                        </a>
+                    </div>
+                    <div>
+                        <h4 class="text-3xl md:text-4xl font-light mb-4 tracking-tight">Tornado</h4>
+                        <p class="text-[10px] md:text-xs opacity-40 font-light max-w-sm uppercase tracking-wider leading-relaxed mb-6">Утилита для шифрования сообщений. Поддержка мультиязычного ввода и акцент на простоте интерфейса.</p>
+                        <a href="https://github.com/z1ruz-code/tornado/releases/latest" target="_blank" class="download-btn">
+                            <svg width="12" height="12" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 1.5V10.5M7.5 10.5L3.5 6.5M7.5 10.5L11.5 6.5M2.5 13.5H12.5" stroke="currentColor" stroke-width="1"/></svg>
+                            Скачать
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
+    <footer class="p-6 md:p-8 border-t border-thin flex flex-col md:flex-row gap-6 md:gap-0 justify-between items-center text-[9px] md:text-[10px] uppercase tracking-widest opacity-30 font-light relative z-10">
+        <div>Z1RUZ — <span class="current-year"></span></div>
+        <div class="flex space-x-8 md:space-x-12">
+            <a href="https://github.com/z1ruz-code" class="hover:text-white transition-colors">GitHub</a>
+        </div>
+    </footer>
+
     <script>
-        const body = document.body;
-        const themeToggle = document.getElementById('themeToggle');
-        const sunIcon = document.getElementById('sunIcon');
-        const moonIcon = document.getElementById('moonIcon');
-        const colorDots = document.querySelectorAll('.color-dot');
+        gsap.registerPlugin(ScrollTrigger);
 
-        function updateIcons(isDark) {
-            sunIcon.classList.toggle('hidden', !isDark);
-            moonIcon.classList.toggle('hidden', isDark);
-        }
-
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-        
-        if (systemPrefersDark.matches) {
-            body.classList.add('dark');
-            updateIcons(true);
-        } else {
-            updateIcons(false);
-        }
-
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark');
-            updateIcons(body.classList.contains('dark'));
+        document.querySelectorAll('.current-year').forEach(el => {
+            el.textContent = new Date().getFullYear();
         });
 
-        colorDots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                colorDots.forEach(d => d.classList.remove('active'));
-                dot.classList.add('active');
-                const colors = JSON.parse(dot.getAttribute('data-colors'));
-                document.documentElement.style.setProperty('--blob-color-1', colors[0]);
-                document.documentElement.style.setProperty('--blob-color-2', colors[1]);
+        const cursor = document.getElementById('cursor');
+        const follower = document.getElementById('follower');
+        const spotlight = document.getElementById('spotlight');
+
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let followerX = mouseX;
+        let followerY = mouseY;
+        let isMoving = false;
+
+        if (!isTouchDevice) {
+            window.addEventListener('mousemove', (e) => {
+                if(!isMoving) {
+                    gsap.to(spotlight, { opacity: 1, duration: 1 });
+                    isMoving = true;
+                }
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                gsap.to(cursor, { x: mouseX, y: mouseY, duration: 0.1, overwrite: true });
+                spotlight.style.background = `radial-gradient(circle 350px at ${mouseX}px ${mouseY}px, rgba(255,255,255,0.06), transparent 100%)`;
+            });
+
+            function animateFollower() {
+                followerX += (mouseX - followerX) * 0.12;
+                followerY += (mouseY - followerY) * 0.12;
+                if (follower) {
+                    follower.style.transform = `translate3d(${followerX - 22}px, ${followerY - 22}px, 0)`;
+                }
+                requestAnimationFrame(animateFollower);
+            }
+            animateFollower();
+
+            const interactables = document.querySelectorAll('a, button, .project-card, .download-btn');
+            interactables.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    gsap.to(follower, { scale: 1.5, backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.5)', duration: 0.4 });
+                    gsap.to(cursor, { scale: 0.6, duration: 0.4 });
+                });
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(follower, { scale: 1, backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,0.15)', duration: 0.4 });
+                    gsap.to(cursor, { scale: 1, duration: 0.4 });
+                });
+            });
+        } else {
+            gsap.to(spotlight, { opacity: 1, duration: 1 });
+            window.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                spotlight.style.background = `radial-gradient(circle 200px at ${touch.clientX}px ${touch.clientY}px, rgba(255,255,255,0.08), transparent 100%)`;
+            });
+        }
+
+        const masterTl = gsap.timeline({ defaults: { ease: "expo.out" }});
+        masterTl
+            .to("#nav", { opacity: 1, duration: 1.5 }, 0.2)
+            .fromTo("#hero-sub", { y: 20, opacity: 0 }, { y: 0, opacity: 0.5, duration: 1.2 }, 0.4)
+            .fromTo("#hero-main", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 1.8 }, 0.6)
+            .fromTo("#hero-desc", { y: 30, opacity: 0 }, { y: 0, opacity: 0.4, duration: 1.5 }, 0.9);
+
+        gsap.utils.toArray('.reveal').forEach(el => {
+            gsap.from(el, {
+                scrollTrigger: { trigger: el, start: "top 92%" },
+                y: 30,
+                opacity: 0,
+                duration: 1.2,
+                ease: "power3.out"
             });
         });
 
-        document.addEventListener('mousemove', (e) => {
-            const card = document.querySelector('.glass-card');
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 60;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 60;
-            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        gsap.utils.toArray('.project-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: { trigger: card, start: "top 90%" },
+                y: 50,
+                opacity: 0,
+                duration: 1.4,
+                delay: i * 0.1,
+                ease: "expo.out"
+            });
         });
     </script>
 </body>
